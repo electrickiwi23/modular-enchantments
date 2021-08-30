@@ -55,7 +55,6 @@ public class Registration {
     public static final RegistryObject<Enchantment> INFESTATION  = ENCHANTMENTS.register("infestation", () -> new InfestationEnchantment(){});
     public static final RegistryObject<Enchantment> MAGMAWALKING = ENCHANTMENTS.register("magma_walker", () -> new MagmaWalker(){});
 
-    public static final RegistryObject<Enchantment> Heavy = ENCHANTMENTS.register("heavy_curse", () -> new HeavyCurse(){});
 
     public static final RegistryObject<Enchantment> SHADOWFORGED = ENCHANTMENTS.register("shadowforged", () -> new ShadowforgedEnchantment(){});
     public static final RegistryObject<Enchantment> VAMPIRISM = ENCHANTMENTS.register("vampirism", () -> new VampirismEnchantment(){});
@@ -75,8 +74,10 @@ public class Registration {
     public static final RegistryObject<Enchantment> COUNTER  = ENCHANTMENTS.register("counter", () -> new CounterEnchantment(){});
     public static final RegistryObject<Enchantment> PERFECT  = ENCHANTMENTS.register("perfect", () -> new PerfectEnchantment(){});
 
-    public static final RegistryObject<Enchantment> DESTRUCTION = ENCHANTMENTS.register("destruction_curse", () -> new DestructionCurse(){});
     public static final RegistryObject<Enchantment> FRAGILITY = ENCHANTMENTS.register("fragile_curse", () -> new FragilityCurse(){});
+    public static final RegistryObject<Enchantment> Heavy = ENCHANTMENTS.register("heavy_curse", () -> new HeavyCurse(){});
+    public static final RegistryObject<Enchantment> DESTRUCTION = ENCHANTMENTS.register("destruction_curse", () -> new DestructionCurse(){});
+
 
 
 

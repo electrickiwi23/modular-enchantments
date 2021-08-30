@@ -3,6 +3,7 @@ package mintnetwork.modularenchantments.Enchantments;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.enchantment.ProtectionEnchantment;
+import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.util.DamageSource;
 
@@ -47,7 +48,6 @@ public class MagicProtectionEnchantment extends Enchantment {
     public boolean canApplyTogether(Enchantment ench) {
         return !(ench instanceof ProtectionEnchantment) && super.canApplyTogether(ench);
     }
-
     /**
      * Gets the amount of ticks an entity should be set fire, adjusted for fire protection.
      */

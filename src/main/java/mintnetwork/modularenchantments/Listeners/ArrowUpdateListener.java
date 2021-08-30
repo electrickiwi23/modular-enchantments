@@ -77,7 +77,7 @@ public class ArrowUpdateListener {
 
                         if (CrossbowShootListener.supressesedlevel.containsKey(arrow.getShooter())) {
                             arrow.setIsCritical(false);
-                            arrow.setDamage(0);
+                            arrow.setDamage(.1);
                         }
 
                         if (CrossbowShootListener.PotencyLevel.containsKey(arrow.getShooter())){

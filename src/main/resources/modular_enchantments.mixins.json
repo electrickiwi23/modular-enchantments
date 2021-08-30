@@ -3,11 +3,6 @@
   "package": "mintnetwork.modularenchantments.mixin",
   "refmap": "modular_enchantments.refmap.json",
   "compatibilityLevel": "JAVA_8",
-  "client": [
-    "KnockBackMixin",
-    "MagmaMixin",
-    "SniperMixin"
-  ],
   "injectors": {
     "defaultRequire": 1
   },
@@ -15,6 +10,9 @@
   "mixins": [
     "FragileMixin",
     "ShadowForgedMixin",
-    "SniperVelocityMixin"
+    "SniperVelocityMixin",
+    "KnockBackMixin",
+    "MagmaMixin",
+    "SniperMixin"
   ]
 }

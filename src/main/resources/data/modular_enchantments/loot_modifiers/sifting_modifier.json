@@ -1,0 +1,31 @@
+{
+  "conditions": [
+    {
+      "condition": "minecraft:match_tool",
+      "predicate": {
+        "enchantments": [
+          {
+            "enchantment": "modular_enchantments:sifting",
+            "levels": {
+              "min": 1
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "siftblocks": [
+    {
+      "block": "minecraft:sand",
+      "nugget": "minecraft:gold_nugget"
+    },
+    {
+      "block":"minecraft:red_sand",
+      "nugget": "minecraft:gold_nugget"
+    },
+    {
+      "block":"minecraft:gravel",
+      "nugget": "minecraft:iron_nugget"
+    }
+  ]
+}

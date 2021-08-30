@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "entries": [
+    "modular_enchantments:auto_smelting",
+    "modular_enchantments:bountiful",
+    "modular_enchantments:sifting_modifier"
+  ]
+}

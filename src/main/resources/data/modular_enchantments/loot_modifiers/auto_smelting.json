@@ -1,0 +1,10 @@
+{
+  "conditions": [
+    {
+      "condition": "minecraft:match_tool",
+      "predicate": {
+        "enchantment": "modular_enchantment:smelting"
+      }
+    }
+  ]
+}

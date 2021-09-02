@@ -64,7 +64,7 @@ public class PlayerSwimListener {
 //                    }
 
                     if (BowShootListener.ricochetLevel.containsKey(arrow.getShooter())) {
-                        ProjectileHitEvent.ricochets.put(arrow, BowShootListener.ricochetLevel.get(arrow.getShooter()));
+//                        ProjectileHitEvent.ricochets.put(arrow, BowShootListener.ricochetLevel.get(arrow.getShooter()));
                         BowShootListener.ricochetLevel.remove(arrow.getShooter());
                     }
                 }

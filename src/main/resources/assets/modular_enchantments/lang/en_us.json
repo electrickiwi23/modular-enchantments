@@ -48,6 +48,8 @@
   "enchantment.modular_enchantments.bountiful.desc" : "Increases the amount of crops the drop when broken with this item.",
   "enchantment.modular_enchantments.fragile_curse" : "Curse of Fragility",
   "enchantment.modular_enchantments.fragile_curse.desc" : "Cursed item looses durability at a faster rate.",
+  "enchantment.modular_enchantments.pain_curse" : "Curse of Pain",
+  "enchantment.modular_enchantments.pain_curse.desc" : "Cursed item will hurt the user when used.",
   "enchantment.modular_enchantments.sifting" : "Sifting",
   "enchantment.modular_enchantments.sifting.desc" : "When you break blocks such as sand and gravel with the item it has a chance to drop nuggets of ores.",
   "enchantment.modular_enchantments.shadowforged" : "Shadow Forged",

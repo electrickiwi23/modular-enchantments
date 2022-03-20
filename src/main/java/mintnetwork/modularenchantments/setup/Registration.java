@@ -77,6 +77,7 @@ public class Registration {
     public static final RegistryObject<Enchantment> FRAGILITY = ENCHANTMENTS.register("fragile_curse", () -> new FragilityCurse(){});
     public static final RegistryObject<Enchantment> Heavy = ENCHANTMENTS.register("heavy_curse", () -> new HeavyCurse(){});
     public static final RegistryObject<Enchantment> DESTRUCTION = ENCHANTMENTS.register("destruction_curse", () -> new DestructionCurse(){});
+    public static final RegistryObject<Enchantment> PAIN = ENCHANTMENTS.register("pain_curse", () -> new PainCurse(){});
 
 
 

@@ -1,15 +1,12 @@
 package mintnetwork.modularenchantments.Enchantments;
 
 import mintnetwork.modularenchantments.ModularEnchantments;
-import net.minecraft.enchantment.EfficiencyEnchantment;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.enchantment.LootBonusEnchantment;
-import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.LootBonusEnchantment;
 
 public class BountifulEnchantment extends LootBonusEnchantment {
     public BountifulEnchantment(){
-        super(Rarity.RARE, ModularEnchantments.hoe , EquipmentSlotType.MAINHAND);
+        super(Rarity.RARE, ModularEnchantments.hoe , EquipmentSlot.MAINHAND);
     }
 }
 

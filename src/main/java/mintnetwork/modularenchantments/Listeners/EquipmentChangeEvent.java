@@ -3,11 +3,9 @@ package mintnetwork.modularenchantments.Listeners;
 import mintnetwork.modularenchantments.Enchantments.GloryEnchantment;
 import mintnetwork.modularenchantments.ModularEnchantments;
 import mintnetwork.modularenchantments.setup.Registration;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -18,14 +16,14 @@ public class EquipmentChangeEvent {
     @SubscribeEvent
     public static void arrowShot(LivingEquipmentChangeEvent event) {
         Entity entity = event.getEntity();
-        if (entity instanceof PlayerEntity){
-            PlayerEntity player = (PlayerEntity) entity;
-            if (event.getSlot().getSlotType()== EquipmentSlotType.Group.ARMOR) {
-                if (EnchantmentHelper.getEnchantmentLevel(Registration.GLORY.get(), player.getHeldItemMainhand()) > 0) {
+        if (entity instanceof Player){
+            Player player = (Player) entity;
+            if (event.getSlot().getType()== EquipmentSlot.Type.ARMOR) {
+                if (player.getMainHandItem().getEnchantmentLevel(Registration.GLORY.get()) > 0) {
                     GloryEnchantment.SetGloryModifiers(player);
                 }
-            } else if (event.getSlot()==EquipmentSlotType.MAINHAND){
-                if (EnchantmentHelper.getEnchantmentLevel(Registration.GLORY.get(), player.getHeldItemMainhand()) > 0) {
+            } else if (event.getSlot()==EquipmentSlot.MAINHAND){
+                if (player.getMainHandItem().getEnchantmentLevel(Registration.GLORY.get()) > 0) {
                     GloryEnchantment.SetGloryModifiers(player);
                 } else  {
                     GloryEnchantment.RemoveGloryModifiers(player);

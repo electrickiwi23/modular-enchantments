@@ -1,17 +1,17 @@
 package mintnetwork.modularenchantments.Enchantments;
 
 import mintnetwork.modularenchantments.ModularEnchantments;
-import net.minecraft.enchantment.*;
-import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 public class MobilityEnchantment extends Enchantment {
     public MobilityEnchantment(){
-        super(Rarity.COMMON, ModularEnchantments.shield, new EquipmentSlotType[] {EquipmentSlotType.MAINHAND});
+        super(Rarity.COMMON, ModularEnchantments.shield, new EquipmentSlot[] {EquipmentSlot.MAINHAND});
     }
 
-    public int getMinEnchantability(int enchantmentLevel){return (enchantmentLevel - 1) * 11;}
+    public int getMinCost(int enchantmentLevel){return (enchantmentLevel - 1) * 11;}
 
-    public int getMaxEnchantability(int enchantmentLevel){ return this.getMinEnchantability(enchantmentLevel) + 11; }
+    public int getMaxCost(int enchantmentLevel){ return this.getMinCost(enchantmentLevel) + 11; }
 
     /**
      * Returns the maximum level that the enchantment can have.
@@ -23,9 +23,10 @@ public class MobilityEnchantment extends Enchantment {
     /**
      * Determines if the enchantment passed can be applyied together with this enchantment.
      */
-    public boolean canApplyTogether(Enchantment ench) {
-        return super.canApplyTogether(ench);
+    public boolean checkCompatibility(Enchantment ench) {
+        return super.checkCompatibility(ench);
     }
+
 
 }
 

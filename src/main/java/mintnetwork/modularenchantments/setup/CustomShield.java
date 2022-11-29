@@ -1,14 +1,14 @@
 package mintnetwork.modularenchantments.setup;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ShieldItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ShieldItem;
 
 public class CustomShield extends ShieldItem {
     CustomShield(Item.Properties builder){
         super(builder);
     }
 
-    public int getItemEnchantability() {
+    public int getEnchantmentValue() {
         return 1;
     }
 }

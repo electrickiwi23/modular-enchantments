@@ -1,22 +1,20 @@
 package mintnetwork.modularenchantments.Enchantments;
 
 import mintnetwork.modularenchantments.ModularEnchantments;
-import net.minecraft.enchantment.DamageEnchantment;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.PowerEnchantment;
-import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 public class RecoveryEnchantment extends Enchantment {
     public RecoveryEnchantment(){
-        super(Rarity.UNCOMMON, ModularEnchantments.shield, new EquipmentSlotType[] {EquipmentSlotType.MAINHAND});
+        super(Rarity.UNCOMMON, ModularEnchantments.shield, new EquipmentSlot[] {EquipmentSlot.MAINHAND});
     }
 
-    public int getMinEnchantability(int enchantmentLevel) {
+    public int getMinCost(int enchantmentLevel) {
         return 1 + (enchantmentLevel - 1) * 10;
     }
 
-    public int getMaxEnchantability(int enchantmentLevel) {
-        return this.getMinEnchantability(enchantmentLevel) + 15;
+    public int getMaxCost(int enchantmentLevel) {
+        return this.getMinCost(enchantmentLevel) + 15;
     }
     /**
      * Returns the maximum level that the enchantment can have.
@@ -28,8 +26,8 @@ public class RecoveryEnchantment extends Enchantment {
     /**
      * Determines if the enchantment passed can be applyied together with this enchantment.
      */
-    public boolean canApplyTogether(Enchantment ench) {
-        return !(ench instanceof MobilityEnchantment) && super.canApplyTogether(ench) ;
+    public boolean checkCompatibility(Enchantment ench) {
+        return !(ench instanceof MobilityEnchantment) && super.checkCompatibility(ench) ;
     }
 
 }

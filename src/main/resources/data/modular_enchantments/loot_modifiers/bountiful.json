@@ -3,8 +3,9 @@
     {
       "condition": "minecraft:match_tool",
       "predicate": {
-        "enchantment": "modular_enchantment:boutiful"
+        "enchantment": "modular_enchantment:bountiful"
       }
     }
-  ]
+  ],
+  "type": "modular_enchantments:bountiful"
 }

@@ -1,22 +1,20 @@
 package mintnetwork.modularenchantments.Enchantments;
 
 import mintnetwork.modularenchantments.ModularEnchantments;
-import net.minecraft.enchantment.*;
-import net.minecraft.entity.CreatureAttribute;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.item.enchantment.DiggingEnchantment;
+import net.minecraft.world.item.enchantment.Enchantment;
+import org.jetbrains.annotations.NotNull;
 
 public class BattingEnchantment extends Enchantment {
     public BattingEnchantment(){
-        super(Rarity.RARE, ModularEnchantments.shovel, new EquipmentSlotType[] {EquipmentSlotType.MAINHAND});
+        super(Rarity.RARE, ModularEnchantments.shovel, new EquipmentSlot[] {EquipmentSlot.MAINHAND});
     }
 
-    public int getMinEnchantability(int enchantmentLevel){ return 10 + 20 * (enchantmentLevel - 1); }
+    public int getMinCost(int enchantmentLevel){ return 10 + 20 * (enchantmentLevel - 1); }
 
-    public int getMaxEnchantability(int enchantmentLevel){ return super.getMinEnchantability(enchantmentLevel) + 30; }
+    public int getMaxCost(int enchantmentLevel){ return super.getMinCost(enchantmentLevel) + 30; }
 
     /**
      * Returns the maximum level that the enchantment can have.
@@ -25,7 +23,7 @@ public class BattingEnchantment extends Enchantment {
         return 2;  }
 
     @Override
-    public float calcDamageByCreature(int level, CreatureAttribute creatureType) {
+    public float getDamageBonus(int level, MobType creatureType) {
         return level;
     }
 
@@ -33,8 +31,8 @@ public class BattingEnchantment extends Enchantment {
     /**
      * Determines if the enchantment passed can be applyied together with this enchantment.
      */
-    public boolean canApplyTogether(Enchantment ench) {
-        return !(ench instanceof EfficiencyEnchantment) &&  super.canApplyTogether(ench);
+    public boolean checkCompatibility(@NotNull Enchantment ench) {
+        return !(ench instanceof DiggingEnchantment) &&  super.checkCompatibility(ench);
     }
 
 }

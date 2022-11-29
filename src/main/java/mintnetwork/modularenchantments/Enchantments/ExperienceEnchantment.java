@@ -1,23 +1,20 @@
 package mintnetwork.modularenchantments.Enchantments;
 
-import mintnetwork.modularenchantments.ModularEnchantments;
-import net.minecraft.block.Block;
-import net.minecraft.enchantment.EfficiencyEnchantment;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.SwordItem;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.LootBonusEnchantment;
 
 public class ExperienceEnchantment extends Enchantment {
     public ExperienceEnchantment(){
-        super(Rarity.RARE, EnchantmentType.DIGGER, new EquipmentSlotType[] {EquipmentSlotType.MAINHAND});
+        super(Rarity.RARE, EnchantmentCategory.DIGGER, new EquipmentSlot[] {EquipmentSlot.MAINHAND});
     }
 
-    public int getMinEnchantability(int enchantmentLevel){ return 10 + 8 * (enchantmentLevel - 1); }
+    public int getMinCost(int enchantmentLevel){ return 10 + 8 * (enchantmentLevel - 1); }
 
-    public int getMaxEnchantability(int enchantmentLevel){ return super.getMinEnchantability(enchantmentLevel) + 30; }
+    public int getMaxCost(int enchantmentLevel){ return super.getMinCost(enchantmentLevel) + 30; }
 
     /**
      * Returns the maximum level that the enchantment can have.
@@ -25,8 +22,8 @@ public class ExperienceEnchantment extends Enchantment {
     public int getMaxLevel() {
         return 3;  }
 
-    public boolean canApply(ItemStack stack) {
-        return stack.getItem() instanceof SwordItem || super.canApply(stack);
+    public boolean canEnchant(ItemStack stack) {
+        return stack.getItem() instanceof SwordItem || super.canEnchant(stack);
     }
 
     public static int calculateExp(int startingExp,int level){
@@ -42,8 +39,8 @@ public class ExperienceEnchantment extends Enchantment {
     /**
      * Determines if the enchantment passed can be applyied together with this enchantment.
      */
-    public boolean canApplyTogether(Enchantment ench) {
-        return !(ench instanceof EfficiencyEnchantment) &&  super.canApplyTogether(ench);
+    public boolean checkCompatibility(Enchantment ench) {
+        return !(ench instanceof LootBonusEnchantment) &&  super.checkCompatibility(ench);
     }
 
     @Override

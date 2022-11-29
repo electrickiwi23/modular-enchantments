@@ -2,10 +2,9 @@ package mintnetwork.modularenchantments.Listeners;
 
 import mintnetwork.modularenchantments.ModularEnchantments;
 import mintnetwork.modularenchantments.setup.Registration;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.PickaxeItem;
-import net.minecraftforge.common.ToolType;
+import net.minecraft.client.gui.screens.inventory.EnchantmentNames;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -14,19 +13,15 @@ import net.minecraftforge.fml.common.Mod;
 public class BreakSpeedListener {
 
     @SubscribeEvent
-    public static void arrowShot(PlayerEvent.BreakSpeed event) {
-        PlayerEntity player = event.getPlayer();
-        int i = EnchantmentHelper.getMaxEnchantmentLevel(Registration.UTILITY.get(), player);
+    public static void BlockBroken(PlayerEvent.BreakSpeed event) {
+        float speed = event.getOriginalSpeed();
+        Player player = event.getEntity();
 
-        boolean effective = false;
-
-        for (ToolType tool:player.inventory.mainInventory.get(player.inventory.currentItem).getToolTypes() ) {
-            if (event.getState().isToolEffective(tool)) effective = true;
+        if (!player.isOnGround() && EnchantmentHelper.getEnchantmentLevel(Registration.AIRAFFINITY.get(),player)>0){
+            speed *= 5f;
         }
 
-        if (!effective){
-            event.setNewSpeed(event.getOriginalSpeed()+ (i*i+1.0f)/2.0f);
+        event.setNewSpeed(speed);
 
-        }
     }
 }

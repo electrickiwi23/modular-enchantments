@@ -1,28 +1,30 @@
 package mintnetwork.modularenchantments.Enchantments;
 
-import net.minecraft.enchantment.*;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.DamageEnchantment;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 public class VenomEnchantment extends Enchantment {
 
     public VenomEnchantment() {
 
-        super(Rarity.UNCOMMON, EnchantmentType.WEAPON, new EquipmentSlotType[] {EquipmentSlotType.MAINHAND});
+        super(Rarity.UNCOMMON, EnchantmentCategory.WEAPON, new EquipmentSlot[] {EquipmentSlot.MAINHAND});
 
 
     }
 
 
-    public int getMinEnchantability(int enchantmentLevel) { return 10 + 15 * (enchantmentLevel - 1); }
+    public int getMinCost(int enchantmentLevel) { return 10 + 15 * (enchantmentLevel - 1); }
 
-    public int getMaxEnchantability(int enchantmentLevel) {
-        return super.getMinEnchantability(enchantmentLevel) + 30;
+    public int getMaxCost(int enchantmentLevel) {
+        return super.getMinCost(enchantmentLevel) + 30;
     }
 
     public int getMaxLevel()
@@ -30,19 +32,19 @@ public class VenomEnchantment extends Enchantment {
         return 2;
     }
 
-    public void onEntityDamaged(LivingEntity user, Entity target, int level) {
+    public void doPostAttack(LivingEntity user, Entity target, int level) {
         if (target instanceof LivingEntity) {
-            ((LivingEntity) target).addPotionEffect(new EffectInstance(Effects.POISON, 120, level - 1));
+            ((LivingEntity) target).addEffect(new MobEffectInstance(MobEffects.POISON, 120, level - 1));
 
         }
     }
 
-    public boolean canApply(ItemStack stack) {
-        return stack.getItem() instanceof AxeItem || super.canApply(stack);
+    public boolean canEnchant(ItemStack stack) {
+        return stack.getItem() instanceof AxeItem || super.canEnchant(stack);
     }
 
-    public boolean canApplyTogether(Enchantment ench){
-        return !(ench instanceof DamageEnchantment)& super.canApplyTogether(ench);
+    public boolean checkCompatibility(Enchantment ench){
+        return !(ench instanceof DamageEnchantment)& super.checkCompatibility(ench);
     }
 }
 

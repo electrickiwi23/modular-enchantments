@@ -1,26 +1,25 @@
 package mintnetwork.modularenchantments.Enchantments;
 
 import mintnetwork.modularenchantments.ModularEnchantments;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.potion.Effects;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 public class PerfectEnchantment extends Enchantment {
     public PerfectEnchantment(){
-        super(Rarity.VERY_RARE, ModularEnchantments.shield, new EquipmentSlotType[] {EquipmentSlotType.MAINHAND});
+        super(Rarity.VERY_RARE, ModularEnchantments.shield, new EquipmentSlot[] {EquipmentSlot.MAINHAND});
     }
 
-    public int getMinEnchantability(int enchantmentLevel){ return 20; }
+    public int getMinCost(int enchantmentLevel){ return 20; }
 
-    public int getMaxEnchantability(int enchantmentLevel){ return 50; }  /**
+    public int getMaxCost(int enchantmentLevel){ return 50; }  /**
      * Returns the maximum level that the enchantment can have.
      */
     public int getMaxLevel() {
         return 1;
     }
 
-    public boolean canApplyTogether(Enchantment ench){
-        return !ench.type.equals(ModularEnchantments.shield);
+    public boolean checkCompatibility(Enchantment ench){
+        return !ench.category.equals(ModularEnchantments.shield);
     }
 
 }

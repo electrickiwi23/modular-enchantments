@@ -2,13 +2,13 @@ package mintnetwork.modularenchantments.Enchantments;
 
 import mintnetwork.modularenchantments.Entities.EnchantMiteEntity;
 import mintnetwork.modularenchantments.setup.Registration;
-import net.minecraft.enchantment.*;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.*;
 
 import java.util.Map;
 import java.util.Random;
@@ -16,18 +16,18 @@ import java.util.Random;
 public class InfestationEnchantment extends Enchantment {
 
     public InfestationEnchantment() {
-        super(Rarity.VERY_RARE, EnchantmentType.ARMOR, new EquipmentSlotType[]{EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET});
+        super(Rarity.VERY_RARE, EnchantmentCategory.ARMOR, new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET});
     }
 
     /**
      * Returns the minimal value of enchantability needed on the enchantment level passed.
      */
-    public int getMinEnchantability(int enchantmentLevel) {
+    public int getMinCost(int enchantmentLevel) {
         return 10 + 20 * (enchantmentLevel - 1);
     }
 
-    public int getMaxEnchantability(int enchantmentLevel) {
-        return this.getMinEnchantability(enchantmentLevel) + 50;
+    public int getMaxCost(int enchantmentLevel) {
+        return this.getMinCost(enchantmentLevel) + 50;
     }
 
     /**
@@ -40,38 +40,37 @@ public class InfestationEnchantment extends Enchantment {
     /**
      * Calculates the damage protection of the enchantment based on level and damage source passed.
      */
-    public void onUserHurt(LivingEntity user, Entity attacker, int level) {
-        Random random = user.getRNG();
-        Map.Entry<EquipmentSlotType, ItemStack> entry = EnchantmentHelper.getRandomItemWithEnchantment(Enchantments.THORNS, user);
+    public void doPostHurt(LivingEntity user, Entity attacker, int level) {
+        RandomSource random = user.getRandom();
+        Map.Entry<EquipmentSlot, ItemStack> entry = EnchantmentHelper.getRandomItemWith(Enchantments.THORNS, user);
         if (shouldHit(level, random)) {
             if (attacker != null) {
                 if (attacker instanceof LivingEntity){
-                EnchantMiteEntity mite = new EnchantMiteEntity(Registration.ENCHANTMITE.get(),user.getEntityWorld(),user);
+                EnchantMiteEntity mite = new EnchantMiteEntity(Registration.ENCHANTMITE.get(),user.getLevel(),user);
                 mite.setTarget((LivingEntity) attacker);
-                mite.setLocationAndAngles(user.getPosXRandom(.5),user.getPosY()+.5,user.getPosZRandom(.5),0,0);
-                attacker.getEntityWorld().addEntity(mite);
+                mite.setPos(user.getRandomX(.5),user.getY()+.5,user.getRandomZ(.5));
+                attacker.getLevel().addFreshEntity(mite);
 
-
-                } else if (attacker instanceof ProjectileEntity&&((ProjectileEntity) attacker).getShooter()!=null&&((ProjectileEntity) attacker).getShooter()instanceof LivingEntity){
-                    EnchantMiteEntity mite = new EnchantMiteEntity(Registration.ENCHANTMITE.get(),user.getEntityWorld(),user);
-                    mite.setTarget((LivingEntity) ((ProjectileEntity) attacker).getShooter());
-                    mite.setLocationAndAngles(user.getPosXRandom(.5),user.getPosY()+.5,user.getPosZRandom(.5),0,0);
-                    attacker.getEntityWorld().addEntity(mite);
+                } else if (attacker instanceof Projectile &&((Projectile) attacker).getOwner()!=null&&((Projectile) attacker).getOwner()instanceof LivingEntity){
+                    EnchantMiteEntity mite = new EnchantMiteEntity(Registration.ENCHANTMITE.get(),user.getLevel(),user);
+                    mite.setTarget((LivingEntity) ((Projectile) attacker).getOwner());
+                    mite.setPos(user.getRandomX(.5),user.getY()+.5,user.getRandomZ(.5));
+                    attacker.getLevel().addFreshEntity(mite);
 
 
                 }
             }
 
             if (entry != null) {
-                entry.getValue().damageItem(2, user, (livingEntity) -> {
-                    livingEntity.sendBreakAnimation(entry.getKey());
+                entry.getValue().hurtAndBreak(2, user, (p_45208_) -> {
+                    p_45208_.broadcastBreakEvent(entry.getKey());
                 });
             }
         }
 
     }
 
-    public static boolean shouldHit(int level, Random rnd) {
+    public static boolean shouldHit(int level, RandomSource rnd) {
         if (level <= 0) {
             return false;
         } else {
@@ -82,8 +81,8 @@ public class InfestationEnchantment extends Enchantment {
     /**
      * Determines if the enchantment passed can be applyied together with this enchantment.
      */
-    public boolean canApplyTogether(Enchantment ench) {
-        return !(ench instanceof ThornsEnchantment) && super.canApplyTogether(ench);
+    public boolean checkCompatibility(Enchantment ench) {
+        return !(ench instanceof ThornsEnchantment) && super.checkCompatibility(ench);
     }
 
     /**

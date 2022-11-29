@@ -1,27 +1,20 @@
 package mintnetwork.modularenchantments.Listeners;
 
 import mintnetwork.modularenchantments.Enchantments.HeavyCurse;
-import mintnetwork.modularenchantments.Enchantments.RepulsionEnchantment;
 import mintnetwork.modularenchantments.ModularEnchantments;
 import mintnetwork.modularenchantments.setup.Registration;
-import net.minecraft.block.AnvilBlock;
-import net.minecraft.client.audio.Sound;
-import net.minecraft.client.audio.SoundEngine;
-import net.minecraft.client.audio.SoundList;
-import net.minecraft.client.particle.EnchantmentTableParticle;
-import net.minecraft.enchantment.*;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.item.*;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.tileentity.EnchantingTableTileEntity;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ShieldItem;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -38,58 +31,70 @@ public class EntityHurtListener {
     @SubscribeEvent
     public static void onUpdate(LivingHurtEvent event) {
         float originalDamage = event.getAmount() ;
-        LivingEntity victim = event.getEntityLiving();
-        Entity attacker = event.getSource().getImmediateSource();
+        LivingEntity victim = event.getEntity();
+        Entity attacker = event.getSource().getDirectEntity();
 
 
 
+        ItemStack item = victim.getUseItem();
+        if (event.getEntity().isDamageSourceBlocked(event.getSource())){
 
-        if (event.getEntityLiving().canBlockDamageSource(event.getSource())){
-
-            if (victim.isHandActive() && !victim.activeItemStack.isEmpty()) {
-                ItemStack item = victim.activeItemStack;
-                if (item.getItem().getUseAction(victim.activeItemStack) == UseAction.BLOCK) {
-                    int counterLevel = EnchantmentHelper.getEnchantmentLevel(Registration.COUNTER.get(), item);
+            System.out.println("using: " + victim.isUsingItem() + " shield: " + (victim.getUseItem().getItem() instanceof ShieldItem));
+            if ( victim.isBlocking()) {
+                    int counterLevel = item.getEnchantmentLevel(Registration.COUNTER.get());
                     if (counterLevel==2){
-                        Countered2.put(attacker,attacker.ticksExisted);
+                        Countered2.put(attacker,attacker.tickCount);
                     } else if (counterLevel==1) {
-                        Countered.put(attacker, attacker.ticksExisted);
+                        Countered.put(attacker, attacker.tickCount);
                     }
 
 
 
-                    int repulsionLevel = EnchantmentHelper.getEnchantmentLevel(Registration.REPULSION.get(), item);
-                    Vector3d vector3d1 = event.getSource().getDamageLocation().subtractReverse(victim.getPositionVec()).normalize().mul(-.33*repulsionLevel-.5,0,-.33*repulsionLevel-.5).add(0,.3+.1*repulsionLevel,0);
-                    attacker.addVelocity(vector3d1.getX(),vector3d1.getY(),vector3d1.getZ());
+                    int repulsionLevel = item.getEnchantmentLevel(Registration.REPULSION.get());
+                    Vec3 vector3d1 = victim.position().subtract(event.getSource().getSourcePosition()).normalize().multiply(-.33*repulsionLevel-.5,0,-.33*repulsionLevel-.5).add(0,.3+.1*repulsionLevel,0);
+                    attacker.setDeltaMovement(vector3d1);
+                }
+            }else if(victim.isUsingItem()&&victim.getUseItem().getItem() instanceof ShieldItem) {
+            int perfectLevel = item.getEnchantmentLevel(Registration.PERFECT.get());
+            if (perfectLevel == 1) {
+                System.out.println(victim.getUseItemRemainingTicks());
+                if (attacker instanceof LivingEntity) {
+                    victim.getLevel().playSound(null, victim.getX(), victim.getY(), victim.getZ(), SoundEvents.ANVIL_PLACE, SoundSource.PLAYERS, .5F, .8F);
+                    ((LivingEntity) attacker).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 30, 4));
+                    ((LivingEntity) attacker).addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 30, 1));
+                    event.setCanceled(true);
+                    event.setAmount(0);
                 }
             }
         }
 
+
         if (Countered2.containsKey(victim)) {
-            if (victim.ticksExisted - Countered2.get(victim) <= 20) {
+            if (victim.tickCount - Countered2.get(victim) <= 20) {
                 event.setAmount(event.getAmount()+2);
+                Countered2.remove(victim);
             } else {
                 Countered2.remove(victim);
             }
         } else if (Countered.containsKey(victim)) {
-            if (victim.ticksExisted - Countered.get(victim) <= 20) {
+            if (victim.tickCount - Countered.get(victim) <= 20) {
                 event.setAmount(event.getAmount() + 1);
+                Countered.remove(victim);
             } else {
                 Countered.remove(victim);
             }
         }
 
-        if (event.getSource().damageType.equals("arrow")){
-            Entity arrow = event.getSource().getImmediateSource();
+        if (event.getSource().getDirectEntity() instanceof AbstractArrow){
+            Entity arrow = event.getSource().getDirectEntity();
             assert arrow != null;
-            if (BowShootListener.volleyArrows.contains((AbstractArrowEntity) arrow)){
-                event.getEntityLiving().arrowHitTimer = 0;
-                event.getEntityLiving().hurtTime = 0;
-                event.getEntityLiving().hurtResistantTime = 0;
+            if (arrow.getTags().contains("volley_arrow")){
+                event.getEntity().invulnerableTime = 0;
+
             }
-        } else if(event.getSource().damageType.equals("fall")) {
-            for (ItemStack item: event.getEntityLiving().getArmorInventoryList()) {
-                Map<Enchantment, Integer> enchants = EnchantmentHelper.getEnchantments(item);
+        } else if(event.getSource().getMsgId().equals("fall")) {
+            for (ItemStack armoritem: event.getEntity().getArmorSlots()) {
+                Map<Enchantment, Integer> enchants = EnchantmentHelper.getEnchantments(armoritem);
                 for (Enchantment e : enchants.keySet()) {
                     if (e instanceof HeavyCurse){
                         event.setAmount(event.getAmount() + originalDamage/2);
@@ -98,22 +103,6 @@ public class EntityHurtListener {
             }
         }
 
-        if (victim.isHandActive() && !victim.activeItemStack.isEmpty()) {
-            ItemStack item = victim.activeItemStack;
-            if (item.getItem().getUseAction(victim.activeItemStack) == UseAction.BLOCK) {
-                int perfectLevel = EnchantmentHelper.getEnchantmentLevel(Registration.PERFECT.get(), item);
-                if (perfectLevel == 1) {
-                    if (((PlayerEntity) victim).getItemInUseCount() >= 71994) {
-                        if (attacker instanceof LivingEntity) {
-                            victim.getEntityWorld().playSound(null,victim.getPosX(),victim.getPosY(),victim.getPosZ(),SoundEvents.BLOCK_ANVIL_PLACE, SoundCategory.PLAYERS,.5F,.8F);
-                            ((LivingEntity) attacker).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 30, 4));
-                            ((LivingEntity) attacker).addPotionEffect(new EffectInstance(Effects.WEAKNESS, 30, 1));
-                            event.setCanceled(true);
-                            event.setAmount(0);
-                        }
-                    }
-                }
-            }
-        }
+
     }
 }

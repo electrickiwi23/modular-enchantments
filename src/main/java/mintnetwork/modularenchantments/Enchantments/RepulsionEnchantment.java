@@ -1,17 +1,18 @@
 package mintnetwork.modularenchantments.Enchantments;
 
 import mintnetwork.modularenchantments.ModularEnchantments;
-import net.minecraft.enchantment.*;
-import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.Enchantment;
+
 
 public class RepulsionEnchantment extends Enchantment {
     public RepulsionEnchantment(){
-        super(Rarity.RARE, ModularEnchantments.shield, new EquipmentSlotType[] {EquipmentSlotType.MAINHAND});
+        super(Rarity.RARE, ModularEnchantments.shield, new EquipmentSlot[] {EquipmentSlot.MAINHAND});
     }
 
-    public int getMinEnchantability(int enchantmentLevel){return (enchantmentLevel) * 8; }
+    public int getMinCost(int enchantmentLevel){return (enchantmentLevel) * 8; }
 
-    public int getMaxEnchantability(int enchantmentLevel){ return this.getMinEnchantability(enchantmentLevel) + 16; }
+    public int getMaxCost(int enchantmentLevel){ return this.getMinCost(enchantmentLevel) + 16; }
 
     /**
      * Returns the maximum level that the enchantment can have.
@@ -23,8 +24,8 @@ public class RepulsionEnchantment extends Enchantment {
     /**
      * Determines if the enchantment passed can be applyied together with this enchantment.
      */
-    public boolean canApplyTogether(Enchantment ench) {
-        return !(ench instanceof CounterEnchantment) &&  super.canApplyTogether(ench);
+    public boolean checkCompatibility(Enchantment ench) {
+        return !(ench instanceof CounterEnchantment) &&  super.checkCompatibility(ench);
     }
 
 }

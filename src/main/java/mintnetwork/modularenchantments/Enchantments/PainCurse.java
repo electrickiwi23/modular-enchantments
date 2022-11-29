@@ -1,25 +1,24 @@
 package mintnetwork.modularenchantments.Enchantments;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 import java.util.Random;
 
 public class PainCurse extends Enchantment {
     public PainCurse() {
-        super(Rarity.VERY_RARE, EnchantmentType.BREAKABLE, new EquipmentSlotType[] {EquipmentSlotType.MAINHAND});
+        super(Rarity.VERY_RARE, EnchantmentCategory.BREAKABLE, new EquipmentSlot[] {EquipmentSlot.MAINHAND});
 
     }
 
-    public int getMinEnchantability(int enchantmentLevel) {
+    public int getMinCost(int enchantmentLevel) {
         return 25;
     }
 
-    public int getMaxEnchantability(int enchantmentLevel){return 50; }
+    public int getMaxCost(int enchantmentLevel){return 50; }
 
     /**
      * Returns the maximum level that the enchantment can have.
@@ -28,7 +27,7 @@ public class PainCurse extends Enchantment {
         return 1;
     }
 
-    public boolean isTreasureEnchantment() {
+    public boolean isTreasureOnly() {
         return true;
     }
 
@@ -36,8 +35,8 @@ public class PainCurse extends Enchantment {
         return true;
     }
 
-    public boolean canApply(ItemStack stack) {
-        return !(stack.getItem() instanceof ArmorItem) && super.canApply(stack);
+    public boolean canEnchant(ItemStack stack) {
+        return !(stack.getItem() instanceof ArmorItem) && super.canEnchant(stack);
     }
 
     public static int getRandomDamage(ItemStack item, Random rand){

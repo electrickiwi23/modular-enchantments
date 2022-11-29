@@ -1,41 +1,41 @@
 package mintnetwork.modularenchantments.LootModifiers;
 
-import com.google.gson.JsonObject;
+import com.google.common.base.Suppliers;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mintnetwork.modularenchantments.setup.Registration;
-import net.minecraft.block.CropsBlock;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.BlastingRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootParameters;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.common.loot.LootModifier;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.function.Supplier;
 
 public class BountifulModifier extends LootModifier {
-    public BountifulModifier(ILootCondition[] conditionsIn) {
+
+    public BountifulModifier(LootItemCondition[] conditionsIn) {
         super(conditionsIn);
     }
 
+    public static final Supplier<Codec<BountifulModifier>> CODEC = Suppliers.memoize(() -> RecordCodecBuilder.create
+            (inst -> codecStart(inst).apply(inst, BountifulModifier::new)));
+
+
     @Nonnull
     @Override
-    protected List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context) {
-       ItemStack tool = context.get(LootParameters.TOOL);
-       if (tool!=null) {
-           if (context.get(LootParameters.BLOCK_STATE)!=null && context.get(LootParameters.BLOCK_STATE).getBlock() instanceof CropsBlock) {
-               if (((CropsBlock) context.get(LootParameters.BLOCK_STATE).getBlock()).isMaxAge(context.get(LootParameters.BLOCK_STATE))) {
-                   List<ItemStack> newLoot = new ArrayList<>();
+    protected ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
+        ItemStack tool = context.getParam(LootContextParams.TOOL);
+        if (tool!=null) {
+           if (context.getParam(LootContextParams.BLOCK_STATE).getBlock() instanceof CropBlock) {
+               if (((CropBlock) context.getParam(LootContextParams.BLOCK_STATE).getBlock()).isMaxAge(context.getParam(LootContextParams.BLOCK_STATE))) {
+                   ObjectArrayList<ItemStack> newLoot = new ObjectArrayList<>();
                    for (ItemStack item : generatedLoot) {
-                       if (Math.random() < EnchantmentHelper.getEnchantmentLevel(Registration.BOUNTIFUL.get(), tool) * .2) {
+                       if (Math.random() <  tool.getEnchantmentLevel(Registration.BOUNTIFUL.get()) * .2) {
                            newLoot.add(item.copy());
                        }
                        newLoot.add(item);
@@ -46,23 +46,10 @@ public class BountifulModifier extends LootModifier {
        }
        return generatedLoot;
     }
-
-    public static class Serializer extends GlobalLootModifierSerializer<BountifulModifier> {
-
-        @Override
-        public BountifulModifier read(ResourceLocation name, JsonObject object, ILootCondition[] conditionsIn) {
-            return new BountifulModifier(conditionsIn);
-        }
-
-        @Override
-        public JsonObject write(BountifulModifier instance) {
-            return makeConditions(instance.conditions);
-
-        }
-
-
+    @Override
+    public Codec<? extends IGlobalLootModifier> codec() {
+        return CODEC.get();
     }
-
 }
 
 

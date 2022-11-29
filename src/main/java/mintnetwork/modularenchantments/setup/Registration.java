@@ -1,46 +1,36 @@
 package mintnetwork.modularenchantments.setup;
 
 import mintnetwork.modularenchantments.Blocks.CrustedMagma;
-import mintnetwork.modularenchantments.Blocks.HoningTableBlock;
-import mintnetwork.modularenchantments.Blocks.HoningTableContainer;
 import mintnetwork.modularenchantments.Enchantments.*;
 import mintnetwork.modularenchantments.Entities.EnchantMiteEntity;
-import mintnetwork.modularenchantments.LootModifiers.AutoSmeltModifier;
-import mintnetwork.modularenchantments.LootModifiers.BountifulModifier;
-import mintnetwork.modularenchantments.LootModifiers.SiftingModifier;
+import mintnetwork.modularenchantments.LootModifiers.ModLootModifers;
 import mintnetwork.modularenchantments.ModularEnchantments;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
-import net.minecraft.client.gui.DisplayEffectsScreen;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 public class Registration {
 
     public static final DeferredRegister<Enchantment> ENCHANTMENTS = DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, ModularEnchantments.MOD_ID);
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, ModularEnchantments.MOD_ID);
-    public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, ModularEnchantments.MOD_ID);
-    public static final DeferredRegister<GlobalLootModifierSerializer<?>> LOOT_MODIFIERS = DeferredRegister.create(ForgeRegistries.LOOT_MODIFIER_SERIALIZERS, ModularEnchantments.MOD_ID);
-    public static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS,ModularEnchantments.MOD_ID);
+    public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, ModularEnchantments.MOD_ID);
 
-    public static final RegistryObject<EntityType<EnchantMiteEntity>> ENCHANTMITE = ENTITIES.register("enchantmite",() -> (EntityType.Builder.<EnchantMiteEntity>create(EnchantMiteEntity::new,EntityClassification.MONSTER).size(0.4F, 0.3F).trackingRange(8)).build("enchantmite"));
 
-    public static final RegistryObject<GlobalLootModifierSerializer<AutoSmeltModifier>> AUTOSMELT = LOOT_MODIFIERS.register("auto_smelting", () -> new AutoSmeltModifier.Serializer(){});
-    public static final RegistryObject<GlobalLootModifierSerializer<BountifulModifier>> BOUNTIFULMODIFIER = LOOT_MODIFIERS.register("bountiful", () -> new BountifulModifier.Serializer(){});
-    public static final RegistryObject<GlobalLootModifierSerializer<SiftingModifier>> SIFTINGMODIFIER = LOOT_MODIFIERS.register("sifting_modifier", () -> new SiftingModifier.Serializer(){});
+
+
+    public static final RegistryObject<EntityType<EnchantMiteEntity>> ENCHANTMITE = ENTITIES.register("enchantmite",() -> (EntityType.Builder.<EnchantMiteEntity>of(EnchantMiteEntity::new, MobCategory.MONSTER).sized(0.4F, 0.3F).setTrackingRange(8)).build("enchantmite"));
+
 
     public static final RegistryObject<Enchantment> UTILITY = ENCHANTMENTS.register("utility", () -> new UtilityEnchantment(){});
     public static final RegistryObject<Enchantment> EXPERIENCE = ENCHANTMENTS.register("experience", () -> new ExperienceEnchantment(){});
@@ -53,6 +43,8 @@ public class Registration {
 
     public static final RegistryObject<Enchantment> MAGICPROT = ENCHANTMENTS.register("magic_protection", () -> new MagicProtectionEnchantment(){});
     public static final RegistryObject<Enchantment> INFESTATION  = ENCHANTMENTS.register("infestation", () -> new InfestationEnchantment(){});
+
+    public static final RegistryObject<Enchantment> AIRAFFINITY = ENCHANTMENTS.register("air_affinity", () -> new AirWorkerEnchantment(){});
     public static final RegistryObject<Enchantment> MAGMAWALKING = ENCHANTMENTS.register("magma_walker", () -> new MagmaWalker(){});
 
 
@@ -65,12 +57,15 @@ public class Registration {
     public static final RegistryObject<Enchantment> SNIPER = ENCHANTMENTS.register("sniper", () -> new SniperEnchantment(){});
 //    public static final RegistryObject<Enchantment> RICOCHET  = ENCHANTMENTS.register("ricochet", () -> new RicochetEnchantment(){});
 
+    public static final RegistryObject<Enchantment> BARBED = ENCHANTMENTS.register("barbed", () -> new BarbedEnchantment(){});
+    public static final RegistryObject<Enchantment> YANKING = ENCHANTMENTS.register("yanking", () -> new FishingRodPullEnchantment(){});
+
     public static final RegistryObject<Enchantment> DAMPENED  = ENCHANTMENTS.register("suppression", () -> new SuppressionEnchantment(){});
     public static final RegistryObject<Enchantment> POTENCY  = ENCHANTMENTS.register("potency", () -> new PotencyEnchantment(){});
 
     public static final RegistryObject<Enchantment> REPULSION  = ENCHANTMENTS.register("repulsion", () -> new RepulsionEnchantment(){});
     public static final RegistryObject<Enchantment> MOBILITY  = ENCHANTMENTS.register("mobility", () -> new MobilityEnchantment(){});
-    public static final RegistryObject<Enchantment> Recovery  = ENCHANTMENTS.register("recovery", () -> new RecoveryEnchantment(){});
+    public static final RegistryObject<Enchantment> RECOVERY  = ENCHANTMENTS.register("recovery", () -> new RecoveryEnchantment(){});
     public static final RegistryObject<Enchantment> COUNTER  = ENCHANTMENTS.register("counter", () -> new CounterEnchantment(){});
     public static final RegistryObject<Enchantment> PERFECT  = ENCHANTMENTS.register("perfect", () -> new PerfectEnchantment(){});
 
@@ -81,31 +76,20 @@ public class Registration {
 
 
 
-
-    public static final RegistryObject<ContainerType<HoningTableContainer>> HONINGTABLECONTAINER = CONTAINERS.register("honing_table_container", () -> new ContainerType<>(HoningTableContainer::getClientContainer));
-
-    public static final RegistryObject<Block> CRUSTEDMAGAMA = BLOCKS.register("crusted_magma_block", () -> new CrustedMagma(AbstractBlock.Properties.create(Material.ROCK, MaterialColor.NETHERRACK).setRequiresTool().setLightLevel((state) -> {
+    public static final RegistryObject<Block> CRUSTEDMAGAMA = BLOCKS.register("crusted_magma_block", () -> new CrustedMagma(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.NETHER).requiresCorrectToolForDrops().lightLevel((state) -> {
         return 3;
-    }).tickRandomly().hardnessAndResistance(0.5F).setAllowsSpawn((state, reader, pos, entity) -> {
-        return entity.isImmuneToFire();
-    }).setNeedsPostProcessing(Blocks::needsPostProcessing).setEmmisiveRendering(Blocks::needsPostProcessing)){});
+    }).randomTicks().strength(0.5F).isValidSpawn((p_187421_, p_187422_, p_187423_, p_187424_) -> p_187424_.fireImmune()).hasPostProcess((p_61036_, p_61037_, p_61038_) -> true).emissiveRendering((p_61036_, p_61037_, p_61038_) -> true)));
 //    public static final RegistryObject<Block> HONINGTABLE = BLOCKS.register("honing_table", () -> new HoningTableBlock(){});
 
     public static final DeferredRegister<Item> REPLACEITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, "minecraft");
 
-    public static final RegistryObject<Item> ENCHANTABLESHIELD = REPLACEITEMS.register("shield", () -> new CustomShield((new Item.Properties()).maxDamage(336).group(ItemGroup.COMBAT)));
-
+    public static final RegistryObject<Item> ENCHANTABLESHIELD = REPLACEITEMS.register("shield", () -> new CustomShield((new Item.Properties()).durability(336).tab(CreativeModeTab.TAB_COMBAT)));
     public void register(){
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         BLOCKS.register(modEventBus);
         ENCHANTMENTS.register(modEventBus);
         REPLACEITEMS.register(modEventBus);
         ENTITIES.register(modEventBus);
-        LOOT_MODIFIERS.register(modEventBus);
-//        CONTAINERS.register(modEventBus);
-
-
-
-
+        ModLootModifers.register(modEventBus);
     }
 }

@@ -1,21 +1,20 @@
 package mintnetwork.modularenchantments.Enchantments;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.enchantment.MultishotEnchantment;
-import net.minecraft.enchantment.PiercingEnchantment;
-import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.ArrowPiercingEnchantment;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.MultiShotEnchantment;
 
 public class PotencyEnchantment extends Enchantment {
     public PotencyEnchantment(){
-        super(Rarity.RARE, EnchantmentType.CROSSBOW, new EquipmentSlotType[] {EquipmentSlotType.MAINHAND});
-    }
+        super(Rarity.VERY_RARE, EnchantmentCategory.CROSSBOW, new EquipmentSlot[] {EquipmentSlot.MAINHAND});    }
 
-    public int getMinEnchantability(int enchantmentLevel) {
+    public int getMinCost(int enchantmentLevel) {
         return 20;
     }
 
-    public int getMaxEnchantability(int enchantmentLevel) {
+    public int getMaxCost(int enchantmentLevel) {
         return 50;
     }
 
@@ -29,8 +28,8 @@ public class PotencyEnchantment extends Enchantment {
     /**
      * Determines if the enchantment passed can be applyied together with this enchantment.
      */
-    public boolean canApplyTogether(Enchantment ench) {
-        return !(ench instanceof PiercingEnchantment) && !(ench instanceof MultishotEnchantment) && super.canApplyTogether(ench);
+    public boolean checkCompatibility(Enchantment ench) {
+        return !(ench instanceof ArrowPiercingEnchantment) && !(ench instanceof MultiShotEnchantment) && super.checkCompatibility(ench);
     }
 
 }

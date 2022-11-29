@@ -1,67 +1,58 @@
 package mintnetwork.modularenchantments.LootModifiers;
 
-import com.google.gson.JsonObject;
+import com.google.common.base.Suppliers;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mintnetwork.modularenchantments.setup.Registration;
-import net.minecraft.block.CropsBlock;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.BlastingRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootParameters;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.BlastingRecipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.common.loot.LootModifier;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class AutoSmeltModifier extends LootModifier {
-    public AutoSmeltModifier(ILootCondition[] conditionsIn) {
+    public AutoSmeltModifier(LootItemCondition[] conditionsIn) {
         super(conditionsIn);
     }
 
+    public static final Supplier<Codec<AutoSmeltModifier>> CODEC = Suppliers.memoize(() -> RecordCodecBuilder.create
+            (inst -> codecStart(inst).apply(inst, AutoSmeltModifier::new)));
     @Nonnull
     @Override
-    protected List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context) {
-       ItemStack tool = context.get(LootParameters.TOOL);
-       if (tool!=null) {
-           if (EnchantmentHelper.getEnchantmentLevel(Registration.SMELTING.get(), tool) > 0) {
-               List<ItemStack> newLoot = new ArrayList<>();
-               for (ItemStack item:generatedLoot) {
-                   Optional<BlastingRecipe> recipe = context.getWorld().getRecipeManager().getRecipe(IRecipeType.BLASTING,new Inventory(item),context.getWorld());
-                   if (recipe.isPresent()){
-                       newLoot.add(recipe.get().getRecipeOutput());
-                   } else{
-                       newLoot.add(item);
+    protected ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
+       ItemStack tool = context.getParam(LootContextParams.TOOL);
+        if (tool.getEnchantmentLevel(Registration.SMELTING.get()) > 0) {
+            ObjectArrayList<ItemStack> newLoot = new ObjectArrayList<>();
+            for (ItemStack item:generatedLoot) {
+                Optional<BlastingRecipe> recipe = context.getLevel().getRecipeManager().getRecipeFor(RecipeType.BLASTING,new SimpleContainer(item),context.getLevel());
+                if (recipe.isPresent()){
+                    ItemStack newItem = recipe.get().getResultItem();
+                    newItem.setCount(item.getCount());
+                    newLoot.add(newItem);
+                } else{
+                    newLoot.add(item);
 
-                   }
-               }
-               return newLoot;
-           }
-       }
-       return generatedLoot;
+                }
+            }
+            return newLoot;
+        }
+        return generatedLoot;
     }
 
-    public static class Serializer extends GlobalLootModifierSerializer<AutoSmeltModifier> {
-
-        @Override
-        public AutoSmeltModifier read(ResourceLocation name, JsonObject object, ILootCondition[] conditionsIn) {
-            return new AutoSmeltModifier(conditionsIn);
-        }
-
-        @Override
-        public JsonObject write(AutoSmeltModifier instance) {
-            return makeConditions(instance.conditions);
-
-        }
-
-
+    @Override
+    public Codec<? extends IGlobalLootModifier> codec() {
+        return CODEC.get();
     }
+
 
 }
 

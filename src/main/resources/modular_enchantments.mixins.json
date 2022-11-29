@@ -6,13 +6,19 @@
   "injectors": {
     "defaultRequire": 1
   },
-  "minVersion": "0.8",
+  "minVersion": "0.8.2",
   "mixins": [
+    "ArrowHitMixin",
+    "CrossbowShootMixin",
+    "EfficiencyMixin",
     "FragileMixin",
-    "ShadowForgedMixin",
-    "SniperVelocityMixin",
     "KnockBackMixin",
     "MagmaMixin",
-    "SniperMixin"
+    "RodHitMixin",
+    "RodPullMixin",
+    "ShadowForgedMixin",
+    "ShieldStunMixin",
+    "SniperVelocityMixin",
+    "VolleyMixin"
   ]
 }

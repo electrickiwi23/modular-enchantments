@@ -3,8 +3,9 @@
     {
       "condition": "minecraft:match_tool",
       "predicate": {
-        "enchantment": "modular_enchantment:smelting"
+        "enchantment": "modular_enchantments:smelting"
       }
     }
-  ]
+  ],
+  "type": "modular_enchantments:auto_smelting"
 }

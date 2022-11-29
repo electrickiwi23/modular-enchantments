@@ -2,10 +2,9 @@ package mintnetwork.modularenchantments.Listeners;
 
 import mintnetwork.modularenchantments.ModularEnchantments;
 import mintnetwork.modularenchantments.setup.Registration;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.InputUpdateEvent;
+import net.minecraftforge.client.event.MovementInputUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -13,12 +12,13 @@ import net.minecraftforge.fml.common.Mod;
 public class PlayerMoveListener {
 
     @SubscribeEvent
-    public static void sinkPlayer(InputUpdateEvent event) {
-        PlayerEntity player = event.getPlayer();
-        if (player.isHandActive()) {
-            int level = EnchantmentHelper.getEnchantmentLevel(Registration.MOBILITY.get(), player.activeItemStack);
-            event.getMovementInput().moveForward *= 1 + level;
-            event.getMovementInput().moveStrafe *= 1 + level;
+    public static void sinkPlayer(MovementInputUpdateEvent event) {
+        Player player = event.getEntity();
+        if (player.isUsingItem()) {
+            int level = player.getUseItem().getEnchantmentLevel(Registration.MOBILITY.get());
+            event.getInput().forwardImpulse *= 1 + level * .8;
+            event.getInput().leftImpulse *= 1 + level * .8;
+
         }
     }
 }

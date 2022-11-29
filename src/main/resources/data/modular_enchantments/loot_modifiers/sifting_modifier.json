@@ -14,18 +14,11 @@
       }
     }
   ],
-  "siftblocks": [
+  "siftblocks":
     {
-      "block": "minecraft:sand",
-      "nugget": "minecraft:gold_nugget"
-    },
-    {
-      "block":"minecraft:red_sand",
-      "nugget": "minecraft:gold_nugget"
-    },
-    {
-      "block":"minecraft:gravel",
-      "nugget": "minecraft:iron_nugget"
-    }
-  ]
+      "minecraft:sand":"minecraft:gold_nugget",
+      "minecraft:red_sand":"minecraft:gold_nugget",
+      "minecraft:gravel": "minecraft:iron_nugget"
+    }  ,
+  "type": "modular_enchantments:sifting_modifier"
 }

@@ -1,24 +1,22 @@
 package mintnetwork.modularenchantments.Enchantments;
 
-import net.minecraft.enchantment.BindingCurseEnchantment;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.enchantment.PowerEnchantment;
-import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 public class HeavyCurse extends Enchantment {
 
     public HeavyCurse() {
 
-        super(Rarity.VERY_RARE, EnchantmentType.WEARABLE, new EquipmentSlotType[] {EquipmentSlotType.HEAD,EquipmentSlotType.CHEST,EquipmentSlotType.LEGS,EquipmentSlotType.FEET});
+        super(Rarity.VERY_RARE, EnchantmentCategory.WEARABLE, new EquipmentSlot[] {EquipmentSlot.HEAD,EquipmentSlot.CHEST,EquipmentSlot.LEGS,EquipmentSlot.FEET});
 
     }
 
-    public int getMinEnchantability(int enchantmentLevel) {
-        return 25;
+    public int getMinCost(int enchantmentLevel) {
+        return 15;
     }
 
-    public int getMaxEnchantability(int enchantmentLevel) {
+    public int getMaxCost(int enchantmentLevel) {
         return 50;
     }
 
@@ -29,7 +27,7 @@ public class HeavyCurse extends Enchantment {
         return 1;
     }
 
-    public boolean isTreasureEnchantment() {
+    public boolean isTreasureOnly() {
         return true;
     }
 

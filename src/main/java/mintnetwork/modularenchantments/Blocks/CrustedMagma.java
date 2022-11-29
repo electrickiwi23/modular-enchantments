@@ -1,83 +1,82 @@
 package mintnetwork.modularenchantments.Blocks;
 
-import net.minecraft.block.*;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.MagmaBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraftforge.common.extensions.IForgeBlockState;
 
 import java.util.Random;
 
 public class CrustedMagma extends MagmaBlock {
-    public static final IntegerProperty AGE = BlockStateProperties.AGE_0_3;
+    public static final int MAX_AGE = 3;
+    public static final IntegerProperty AGE = BlockStateProperties.AGE_3;
+    private static final int NEIGHBORS_TO_AGE = 4;
+    private static final int NEIGHBORS_TO_MELT = 2;
+
     public CrustedMagma(Properties properties) {
         super(properties);
-        this.setDefaultState(this.stateContainer.getBaseState().with(AGE, 0));
+        this.registerDefaultState(this.stateDefinition.any().setValue(AGE, 0));
     }
     
-    public void turnIntoLava(BlockState state, World world, BlockPos pos){
-        world.setBlockState(pos, Blocks.LAVA.getDefaultState());
+    public void turnIntoLava(BlockState state, Level world, BlockPos pos){
+        world.setBlockAndUpdate(pos, Blocks.LAVA.defaultBlockState());
         world.neighborChanged(pos, Blocks.LAVA, pos);
     }
 
     /**
      * Performs a random tick on a block.
      */
-    public void randomTick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
+    public void randomTick(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource random) {
         this.tick(state, worldIn, pos, random);
     }
 
-    public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random rand) {
-        if ((rand.nextInt(3) == 0 || this.shouldMelt(worldIn, pos, 4)) && worldIn.getLight(pos) > 11 - state.get(AGE) - state.getOpacity(worldIn, pos) && this.slightlyMelt(state, worldIn, pos)) {
-            BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
+    public void tick(BlockState p_221233_, ServerLevel p_221234_, BlockPos p_221235_, RandomSource p_221236_) {
+        if ((p_221236_.nextInt(3) == 0 || this.fewerNeigboursThan(p_221234_, p_221235_, 4)) && p_221234_.getMaxLocalRawBrightness(p_221235_) > 11 - p_221233_.getValue(AGE) - p_221233_.getLightBlock(p_221234_, p_221235_) && this.slightlyMelt(p_221233_, p_221234_, p_221235_)) {
+            BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
 
             for(Direction direction : Direction.values()) {
-                blockpos$mutable.setAndMove(pos, direction);
-                BlockState blockstate = worldIn.getBlockState(blockpos$mutable);
-                if (blockstate.matchesBlock(this) && !this.slightlyMelt(blockstate, worldIn, blockpos$mutable)) {
-                    worldIn.getPendingBlockTicks().scheduleTick(blockpos$mutable, this, MathHelper.nextInt(rand, 20, 40));
+                blockpos$mutableblockpos.setWithOffset(p_221235_, direction);
+                BlockState blockstate = p_221234_.getBlockState(blockpos$mutableblockpos);
+                if (blockstate.is(this) && !this.slightlyMelt(blockstate, p_221234_, blockpos$mutableblockpos)) {
+                    p_221234_.scheduleTick(blockpos$mutableblockpos, this, Mth.nextInt(p_221236_, 20, 40));
                 }
             }
 
         } else {
-            worldIn.getPendingBlockTicks().scheduleTick(pos, this, MathHelper.nextInt(rand, 20, 40));
+            p_221234_.scheduleTick(p_221235_, this, Mth.nextInt(p_221236_, 20, 40));
         }
     }
 
-    private boolean slightlyMelt(BlockState state, World worldIn, BlockPos pos) {
-        int i = state.get(AGE);
-        if (i < 3) {
-            worldIn.setBlockState(pos, state.with(AGE, Integer.valueOf(i + 1)), 2);
-            return false;
-        } else {
-            this.turnIntoLava(state, worldIn, pos);
-            return true;
-        }
-    }
-
-    public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-        if (blockIn == this && this.shouldMelt(worldIn, pos, 2)) {
-            this.turnIntoLava(state, worldIn, pos);
+    public void neighborChanged(BlockState p_53579_, Level p_53580_, BlockPos p_53581_, Block p_53582_, BlockPos p_53583_, boolean p_53584_) {
+        if (p_53582_.defaultBlockState().is(this) && this.fewerNeigboursThan(p_53580_, p_53581_, 2)) {
+            this.turnIntoLava(p_53579_, p_53580_, p_53581_);
         }
 
-        super.neighborChanged(state, worldIn, pos, blockIn, fromPos, isMoving);
+        super.neighborChanged(p_53579_, p_53580_, p_53581_, p_53582_, p_53583_, p_53584_);
     }
 
-    private boolean shouldMelt(IBlockReader worldIn, BlockPos pos, int neighborsRequired) {
+    private boolean fewerNeigboursThan(BlockGetter p_53566_, BlockPos p_53567_, int p_53568_) {
         int i = 0;
-        BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
+        BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
 
         for(Direction direction : Direction.values()) {
-            blockpos$mutable.setAndMove(pos, direction);
-            if (worldIn.getBlockState(blockpos$mutable).matchesBlock(this)) {
+            blockpos$mutableblockpos.setWithOffset(p_53567_, direction);
+            if (p_53566_.getBlockState(blockpos$mutableblockpos).is(this)) {
                 ++i;
-                if (i >= neighborsRequired) {
+                if (i >= p_53568_) {
                     return false;
                 }
             }
@@ -86,11 +85,23 @@ public class CrustedMagma extends MagmaBlock {
         return true;
     }
 
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(AGE);
+
+    private boolean slightlyMelt(BlockState state, Level worldIn, BlockPos pos) {
+        int i = state.getValue(AGE);
+        if (i < 3) {
+            worldIn.setBlock(pos, state.setValue(AGE, i + 1), 2);
+            return false;
+        } else {
+            this.turnIntoLava(state, worldIn, pos);
+            return true;
+        }
     }
 
-    public ItemStack getItem(IBlockReader worldIn, BlockPos pos, BlockState state) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> p_53586_) {
+        p_53586_.add(AGE);
+    }
+
+    public ItemStack getCloneItemStack(BlockGetter p_53570_, BlockPos p_53571_, BlockState p_53572_) {
         return ItemStack.EMPTY;
     }
 }

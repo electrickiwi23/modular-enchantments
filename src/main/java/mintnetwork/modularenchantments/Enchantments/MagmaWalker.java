@@ -1,35 +1,35 @@
 package mintnetwork.modularenchantments.Enchantments;
 
 import mintnetwork.modularenchantments.setup.Registration;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FlowingFluidBlock;
-import net.minecraft.block.material.Material;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.enchantment.FrostWalkerEnchantment;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.FrostWalkerEnchantment;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.shapes.CollisionContext;
 
 public class MagmaWalker extends Enchantment {
 
     public MagmaWalker() {
 
-        super(Rarity.VERY_RARE, EnchantmentType.ARMOR_FEET, new EquipmentSlotType[] {EquipmentSlotType.FEET});
+        super(Rarity.VERY_RARE, EnchantmentCategory.ARMOR_FEET, new EquipmentSlot[] {EquipmentSlot.FEET});
 
     }
 
-    public int getMinEnchantability(int enchantmentLevel) {
+    public int getMinCost(int enchantmentLevel) {
         return enchantmentLevel * 10;
     }
 
-    public int getMaxEnchantability(int enchantmentLevel) {
-        return this.getMinEnchantability(enchantmentLevel) + 15;
+    public int getMaxCost(int enchantmentLevel) {
+        return this.getMinCost(enchantmentLevel) + 15;
     }
 
     public boolean isTreasureEnchantment() {
@@ -43,22 +43,22 @@ public class MagmaWalker extends Enchantment {
         return 2;
     }
 
-    public static void freezeNearby(LivingEntity living, World worldIn, BlockPos pos, int level) {
+    public static void freezeNearby(LivingEntity living, Level worldIn, BlockPos pos, int level) {
         if (living.isOnGround()) {
-            BlockState blockstate = Registration.CRUSTEDMAGAMA.get().getDefaultState();
+            BlockState blockstate = Registration.CRUSTEDMAGAMA.get().defaultBlockState();
             float f = (float)Math.min(16, 2 + level);
-            BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
+            BlockPos.MutableBlockPos blockpos$mutable = new BlockPos.MutableBlockPos();
 
-            for(BlockPos blockpos : BlockPos.getAllInBoxMutable(pos.add((double)(-f), -1.0D, (double)(-f)), pos.add((double)f, -1.0D, (double)f))) {
-                if (blockpos.withinDistance(living.getPositionVec(), (double)f)) {
-                    blockpos$mutable.setPos(blockpos.getX(), blockpos.getY() + 1, blockpos.getZ());
+            for(BlockPos blockpos : BlockPos.betweenClosed(pos.offset((-f), -1.0, (-f)), pos.offset(f, -1.0D, f))) {
+                if (blockpos.closerToCenterThan(living.position(), f)) {
+                    blockpos$mutable.set(blockpos.getX(), blockpos.getY() + 1, blockpos.getZ());
                     BlockState blockstate1 = worldIn.getBlockState(blockpos$mutable);
-                    if (blockstate1.isAir(worldIn, blockpos$mutable)) {
+                    if (blockstate1.isAir()) {
                         BlockState blockstate2 = worldIn.getBlockState(blockpos);
-                        boolean isFull = blockstate2.getBlock() == Blocks.LAVA && blockstate2.get(FlowingFluidBlock.LEVEL) == 0; //TODO: Forge, modded waters?
-                        if (blockstate2.getMaterial() == Material.LAVA && isFull && blockstate.isValidPosition(worldIn, blockpos) && worldIn.placedBlockCollides(blockstate, blockpos, ISelectionContext.dummy()) && !net.minecraftforge.event.ForgeEventFactory.onBlockPlace(living, net.minecraftforge.common.util.BlockSnapshot.create(worldIn.getDimensionKey(), worldIn, blockpos), net.minecraft.util.Direction.UP)) {
-                            worldIn.setBlockState(blockpos, blockstate);
-                            worldIn.getPendingBlockTicks().scheduleTick(blockpos, Registration.CRUSTEDMAGAMA.get(), MathHelper.nextInt(living.getRNG(), 60, 120));
+                        boolean isFull = blockstate2.getBlock() == Blocks.LAVA && blockstate2.getValue(LiquidBlock.LEVEL) == 0;
+                        if (blockstate2.getMaterial() == Material.LAVA && isFull && blockstate.canSurvive(worldIn, blockpos) && worldIn.isUnobstructed(blockstate, blockpos, CollisionContext.empty()) && !net.minecraftforge.event.ForgeEventFactory.onBlockPlace(living, net.minecraftforge.common.util.BlockSnapshot.create(worldIn.dimension(), worldIn, blockpos), net.minecraft.core.Direction.UP)) {
+                            worldIn.setBlockAndUpdate(blockpos, blockstate);
+                            worldIn.scheduleTick(blockpos, Registration.CRUSTEDMAGAMA.get(), Mth.nextInt(living.getRandom(), 60, 120));
                         }
                     }
                 }
@@ -70,8 +70,8 @@ public class MagmaWalker extends Enchantment {
     /**
      * Determines if the enchantment passed can be applyied together with this enchantment.
      */
-    public boolean canApplyTogether(Enchantment ench) {
-        return super.canApplyTogether(ench) && !(ench instanceof FrostWalkerEnchantment) && ench != Enchantments.DEPTH_STRIDER;
+    public boolean checkCompatibility(Enchantment ench) {
+        return super.checkCompatibility(ench) && !(ench instanceof FrostWalkerEnchantment) && ench != Enchantments.DEPTH_STRIDER;
     }
 }
 

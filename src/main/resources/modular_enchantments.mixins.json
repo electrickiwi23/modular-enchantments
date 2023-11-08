@@ -17,8 +17,6 @@
     "RodHitMixin",
     "RodPullMixin",
     "ShadowForgedMixin",
-    "ShieldStunMixin",
-    "SniperVelocityMixin",
-    "VolleyMixin"
+    "ShieldStunMixin"
   ]
 }

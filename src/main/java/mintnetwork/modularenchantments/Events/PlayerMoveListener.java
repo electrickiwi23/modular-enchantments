@@ -1,4 +1,4 @@
-package mintnetwork.modularenchantments.Listeners;
+package mintnetwork.modularenchantments.Events;
 
 import mintnetwork.modularenchantments.ModularEnchantments;
 import mintnetwork.modularenchantments.setup.Registration;

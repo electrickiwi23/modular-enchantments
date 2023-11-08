@@ -1,4 +1,4 @@
-package mintnetwork.modularenchantments.Listeners;
+package mintnetwork.modularenchantments.Events;
 
 import mintnetwork.modularenchantments.Entities.EnchantMiteRenderer;
 import mintnetwork.modularenchantments.ModularEnchantments;
@@ -15,7 +15,6 @@ public class FMLClientSetupEvent {
     public static void arrowShot(final net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent event) {
 
         EntityRenderers.register(Registration.ENCHANTMITE.get(), EnchantMiteRenderer::new);
-//        ScreenManager.registerFactory(Registration.HONINGTABLECONTAINER.get(), HoningTableScreen::new);
     }
 
 }

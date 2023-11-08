@@ -39,7 +39,6 @@ public class Registration {
     public static final RegistryObject<Enchantment> PUNCTURING = ENCHANTMENTS.register("puncturing", ()-> new PunctureingEnchantment(){});
     public static final RegistryObject<Enchantment> SMELTING = ENCHANTMENTS.register("smelting", ()-> new SmeltingEnchantment(){});
     public static final RegistryObject<Enchantment> GLORY = ENCHANTMENTS.register("glory", ()-> new GloryEnchantment(){});
-    public static final RegistryObject<Enchantment> BOUNTIFUL = ENCHANTMENTS.register("bountiful", ()-> new BountifulEnchantment(){});
 
     public static final RegistryObject<Enchantment> MAGICPROT = ENCHANTMENTS.register("magic_protection", () -> new MagicProtectionEnchantment(){});
     public static final RegistryObject<Enchantment> INFESTATION  = ENCHANTMENTS.register("infestation", () -> new InfestationEnchantment(){});

@@ -1,4 +1,4 @@
-package mintnetwork.modularenchantments.Listeners;
+package mintnetwork.modularenchantments.Events;
 
 import mintnetwork.modularenchantments.Enchantments.HeavyCurse;
 import mintnetwork.modularenchantments.ModularEnchantments;
@@ -15,8 +15,6 @@ import java.util.Map;
 
 @Mod.EventBusSubscriber(modid = ModularEnchantments.MOD_ID)
 public class PlayerSwimListener {
-
-//    private static List<Entity> hasSniped = new ArrayList<>();
 
     @SubscribeEvent
     public static void tickPlayer(TickEvent.PlayerTickEvent event) {

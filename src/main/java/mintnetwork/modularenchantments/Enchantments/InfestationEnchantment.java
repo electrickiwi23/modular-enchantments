@@ -42,19 +42,22 @@ public class InfestationEnchantment extends Enchantment {
      */
     public void doPostHurt(LivingEntity user, Entity attacker, int level) {
         RandomSource random = user.getRandom();
-        Map.Entry<EquipmentSlot, ItemStack> entry = EnchantmentHelper.getRandomItemWith(Enchantments.THORNS, user);
+        Map.Entry<EquipmentSlot, ItemStack> entry = EnchantmentHelper.getRandomItemWith(Registration.INFESTATION.get(), user);
         if (shouldHit(level, random)) {
             if (attacker != null) {
                 if (attacker instanceof LivingEntity){
-                EnchantMiteEntity mite = new EnchantMiteEntity(Registration.ENCHANTMITE.get(),user.getLevel(),user);
+
+                EnchantMiteEntity mite =Registration.ENCHANTMITE.get().create(user.getLevel());
+                mite.setOwner(user);
                 mite.setTarget((LivingEntity) attacker);
-                mite.setPos(user.getRandomX(.5),user.getY()+.5,user.getRandomZ(.5));
+                mite.moveTo(user.getRandomX(.5),user.getY()+.5,user.getRandomZ(.5));
                 attacker.getLevel().addFreshEntity(mite);
 
                 } else if (attacker instanceof Projectile &&((Projectile) attacker).getOwner()!=null&&((Projectile) attacker).getOwner()instanceof LivingEntity){
-                    EnchantMiteEntity mite = new EnchantMiteEntity(Registration.ENCHANTMITE.get(),user.getLevel(),user);
+                    EnchantMiteEntity mite = Registration.ENCHANTMITE.get().create(user.getLevel());
+                    mite.setOwner(user);
                     mite.setTarget((LivingEntity) ((Projectile) attacker).getOwner());
-                    mite.setPos(user.getRandomX(.5),user.getY()+.5,user.getRandomZ(.5));
+                    mite.moveTo(user.getRandomX(.5),user.getY()+.5,user.getRandomZ(.5));
                     attacker.getLevel().addFreshEntity(mite);
 
 

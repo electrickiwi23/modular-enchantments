@@ -1,8 +1,7 @@
-package mintnetwork.modularenchantments.Listeners;
+package mintnetwork.modularenchantments.Events;
 
 import mintnetwork.modularenchantments.ModularEnchantments;
 import mintnetwork.modularenchantments.setup.Registration;
-import net.minecraft.client.gui.screens.inventory.EnchantmentNames;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -14,7 +13,7 @@ public class BreakSpeedListener {
 
     @SubscribeEvent
     public static void BlockBroken(PlayerEvent.BreakSpeed event) {
-        float speed = event.getOriginalSpeed();
+        float speed = event.getNewSpeed();
         Player player = event.getEntity();
 
         if (!player.isOnGround() && EnchantmentHelper.getEnchantmentLevel(Registration.AIRAFFINITY.get(),player)>0){

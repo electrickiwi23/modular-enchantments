@@ -13,7 +13,6 @@ public class ModLootModifers {
             DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, ModularEnchantments.MOD_ID);
 
     public static final RegistryObject<Codec<? extends IGlobalLootModifier>> AUTO_SMELT = LOOT_MODIFIER_SERIALIZERS.register("auto_smelting", AutoSmeltModifier.CODEC);
-    public static final RegistryObject<Codec<? extends IGlobalLootModifier>> BOUNTIFUL = LOOT_MODIFIER_SERIALIZERS.register("bountiful", BountifulModifier.CODEC);
     public static final RegistryObject<Codec<? extends IGlobalLootModifier>> SIFTING = LOOT_MODIFIER_SERIALIZERS.register("sifting_modifier", SiftingModifier.CODEC);
 
 

@@ -2,6 +2,7 @@ package mintnetwork.modularenchantments.Entities;
 
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
@@ -36,19 +37,23 @@ public class EnchantMiteEntity extends Monster {
         this.owner = owner;
     }
 
+    public void setOwner(LivingEntity owner) {
+        this.owner = owner;
+    }
+
+
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new FloatGoal(this));
         this.goalSelector.addGoal(1, new ClimbOnTopOfPowderSnowGoal(this, this.level));
         this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.0D, false));
         this.targetSelector.addGoal(1, (new HurtByTargetGoal(this)).setAlertOthers());
-//        this.targetSelector.addGoal(1, (new HurtByTargetGoal(this)));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, LivingEntity.class,100, true,false,new Predicate<LivingEntity>() {
             @Override
             public boolean test(LivingEntity livingEntity) {
 
                 if (attackerTarget!=null) return livingEntity == attackerTarget;
                 if (owner !=null) return livingEntity!=owner;
-                return true;
+                return !(livingEntity instanceof EnchantMiteEntity);
             }
         } ));
     }
@@ -100,8 +105,9 @@ public class EnchantMiteEntity extends Monster {
 
     public void tick() {
         this.yBodyRot = this.getYRot();
-        if (tickCount<=600){
+        if (tickCount>=600){
             remove(RemovalReason.KILLED);
+            this.level.addParticle(ParticleTypes.POOF,position().x, position().y,position().z,0,0,0);
 
         }
         super.tick();

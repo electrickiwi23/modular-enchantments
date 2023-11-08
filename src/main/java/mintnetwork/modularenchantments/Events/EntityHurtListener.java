@@ -1,4 +1,4 @@
-package mintnetwork.modularenchantments.Listeners;
+package mintnetwork.modularenchantments.Events;
 
 import mintnetwork.modularenchantments.Enchantments.HeavyCurse;
 import mintnetwork.modularenchantments.ModularEnchantments;
@@ -15,6 +15,7 @@ import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.ForgeConfig;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -35,11 +36,9 @@ public class EntityHurtListener {
         Entity attacker = event.getSource().getDirectEntity();
 
 
-
         ItemStack item = victim.getUseItem();
         if (event.getEntity().isDamageSourceBlocked(event.getSource())){
 
-            System.out.println("using: " + victim.isUsingItem() + " shield: " + (victim.getUseItem().getItem() instanceof ShieldItem));
             if ( victim.isBlocking()) {
                     int counterLevel = item.getEnchantmentLevel(Registration.COUNTER.get());
                     if (counterLevel==2){
@@ -57,7 +56,6 @@ public class EntityHurtListener {
             }else if(victim.isUsingItem()&&victim.getUseItem().getItem() instanceof ShieldItem) {
             int perfectLevel = item.getEnchantmentLevel(Registration.PERFECT.get());
             if (perfectLevel == 1) {
-                System.out.println(victim.getUseItemRemainingTicks());
                 if (attacker instanceof LivingEntity) {
                     victim.getLevel().playSound(null, victim.getX(), victim.getY(), victim.getZ(), SoundEvents.ANVIL_PLACE, SoundSource.PLAYERS, .5F, .8F);
                     ((LivingEntity) attacker).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 30, 4));

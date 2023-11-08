@@ -20,7 +20,6 @@ public abstract class RodPullMixin {
     public Vec3 ChangeVelocity(Vec3 value){
 
         int level = EnchantmentHelper.getEnchantmentLevel(Registration.YANKING.get(),((FishingHook)(Object)this).getPlayerOwner());
-        System.out.println(level);
         return value.scale(level * .66 + 1);
 
     }

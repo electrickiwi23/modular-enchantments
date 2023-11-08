@@ -1,4 +1,4 @@
-package mintnetwork.modularenchantments.Listeners;
+package mintnetwork.modularenchantments.Events;
 
 import mintnetwork.modularenchantments.Enchantments.GloryEnchantment;
 import mintnetwork.modularenchantments.ModularEnchantments;
